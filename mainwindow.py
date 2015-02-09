@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Feb  3 16:21:37 2015
+# Created: Sun Feb  8 18:23:19 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,12 +13,12 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(521, 355)
+        MainWindow.resize(806, 590)
         MainWindow.setStyleSheet("")
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.readyframe = QtGui.QFrame(self.centralWidget)
-        self.readyframe.setGeometry(QtCore.QRect(650, 259, 411, 161))
+        self.readyframe.setGeometry(QtCore.QRect(0, 0, 640, 300))
         self.readyframe.setStyleSheet("background-color:white;")
         self.readyframe.setFrameShape(QtGui.QFrame.StyledPanel)
         self.readyframe.setFrameShadow(QtGui.QFrame.Raised)
@@ -27,8 +27,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_7 = QtGui.QVBoxLayout()
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
@@ -44,7 +45,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.label)
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_5 = QtGui.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        spacerItem2 = QtGui.QSpacerItem(100, 20, QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem2)
+        self.btnStart = QtGui.QPushButton(self.readyframe)
+        font = QtGui.QFont()
+        font.setPointSize(36)
+        self.btnStart.setFont(font)
+        self.btnStart.setObjectName("btnStart")
+        self.horizontalLayout_5.addWidget(self.btnStart)
+        spacerItem3 = QtGui.QSpacerItem(100, 20, QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem3)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_5)
+        spacerItem4 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Maximum)
+        self.verticalLayout_7.addItem(spacerItem4)
+        self.verticalLayout_2.addLayout(self.verticalLayout_7)
         self.introframe = QtGui.QFrame(self.centralWidget)
         self.introframe.setGeometry(QtCore.QRect(650, 10, 361, 261))
         self.introframe.setStyleSheet("background-color:white;")
@@ -56,8 +73,8 @@ class Ui_MainWindow(object):
         self.verticalLayout.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
         self.verticalLayout.setContentsMargins(3, 3, 24, 3)
         self.verticalLayout.setObjectName("verticalLayout")
-        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem2)
+        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem5)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(50)
         self.horizontalLayout.setContentsMargins(200, -1, 200, -1)
@@ -80,10 +97,10 @@ class Ui_MainWindow(object):
         self.btnDone.setObjectName("btnDone")
         self.horizontalLayout.addWidget(self.btnDone)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem3)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem6)
         self.gameframe = QtGui.QFrame(self.centralWidget)
-        self.gameframe.setGeometry(QtCore.QRect(0, 0, 640, 420))
+        self.gameframe.setGeometry(QtCore.QRect(60, 150, 640, 420))
         self.gameframe.setStyleSheet("background-color:white;")
         self.gameframe.setFrameShape(QtGui.QFrame.StyledPanel)
         self.gameframe.setFrameShadow(QtGui.QFrame.Raised)
@@ -99,8 +116,8 @@ class Ui_MainWindow(object):
         self.lblGlance.setText("")
         self.lblGlance.setObjectName("lblGlance")
         self.verticalLayout_4.addWidget(self.lblGlance)
-        spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem4)
+        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem7)
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(10)
         self.horizontalLayout_4.setContentsMargins(100, -1, 20, -1)
@@ -132,14 +149,9 @@ class Ui_MainWindow(object):
         self.btnLabelUp.setFont(font)
         self.btnLabelUp.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.btnLabelUp.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
-        self.btnLabelUp.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.btnLabelUp.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btnLabelUp.setAutoFillBackground(False)
-        self.btnLabelUp.setStyleSheet("QPushButton{\n"
-"    border:0px;\n"
-"    margin:0px;\n"
-"    padding:0px;\n"
-"    color:black;\n"
-"}\n"
+        self.btnLabelUp.setStyleSheet("QPushButton{ border:0px; margin:0px; padding:0px; color:black; text-align:left;}\n"
 "\n"
 "")
         self.btnLabelUp.setAutoDefault(False)
@@ -151,25 +163,19 @@ class Ui_MainWindow(object):
         font.setPointSize(36)
         self.btnLabelDown.setFont(font)
         self.btnLabelDown.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.btnLabelDown.setLayoutDirection(QtCore.Qt.RightToLeft)
-        self.btnLabelDown.setStyleSheet("QPushButton{\n"
-"    border:0px;\n"
-"    margin:0px;\n"
-"    padding:0px;\n"
-"    color:black;\n"
-"}\n"
-"")
+        self.btnLabelDown.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btnLabelDown.setStyleSheet("QPushButton{ border:0px; margin:0px; padding:0px;    color:black; text-align:left;}")
         self.btnLabelDown.setFlat(True)
         self.btnLabelDown.setObjectName("btnLabelDown")
         self.verticalLayout_6.addWidget(self.btnLabelDown)
         self.horizontalLayout_4.addLayout(self.verticalLayout_6)
-        spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(spacerItem5)
+        spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem8)
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
-        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem6)
-        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem7)
+        spacerItem9 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem9)
+        spacerItem10 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem10)
         self.btnSubmit = QtGui.QPushButton(self.gameframe)
         font = QtGui.QFont()
         font.setPointSize(36)
@@ -189,8 +195,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem8)
+        spacerItem11 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem11)
         self.lblFeedback = QtGui.QLabel(self.feedbackframe)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
@@ -201,8 +207,8 @@ class Ui_MainWindow(object):
 "}")
         self.lblFeedback.setObjectName("lblFeedback")
         self.horizontalLayout_3.addWidget(self.lblFeedback)
-        spacerItem9 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem9)
+        spacerItem12 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem12)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -212,6 +218,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("MainWindow", "Task is ready", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnStart.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
         self.editParticipantID.setText(QtGui.QApplication.translate("MainWindow", "Participant ID", None, QtGui.QApplication.UnicodeUTF8))
         self.btnDone.setText(QtGui.QApplication.translate("MainWindow", "DONE", None, QtGui.QApplication.UnicodeUTF8))
         self.btnUp.setText(QtGui.QApplication.translate("MainWindow", "▲", None, QtGui.QApplication.UnicodeUTF8))
