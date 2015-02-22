@@ -23,7 +23,7 @@
    <widget class="QFrame" name="readyframe">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>700</x>
       <y>0</y>
       <width>640</width>
       <height>300</height>
@@ -42,7 +42,16 @@
      <property name="spacing">
       <number>0</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
@@ -67,7 +76,7 @@
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
             </font>
            </property>
            <property name="styleSheet">
@@ -117,7 +126,7 @@
           <widget class="QPushButton" name="btnStart">
            <property name="font">
             <font>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
             </font>
            </property>
            <property name="text">
@@ -166,8 +175,8 @@
    <widget class="QFrame" name="introframe">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>10</y>
+      <x>700</x>
+      <y>70</y>
       <width>361</width>
       <height>261</height>
      </rect>
@@ -229,7 +238,7 @@
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>36</pointsize>
+           <pointsize>42</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -248,7 +257,7 @@
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>36</pointsize>
+           <pointsize>42</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -279,8 +288,8 @@
    <widget class="QFrame" name="gameframe">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>150</y>
+      <x>0</x>
+      <y>0</y>
       <width>640</width>
       <height>420</height>
      </rect>
@@ -311,11 +320,11 @@
       <widget class="QLabel" name="lblGlance">
        <property name="font">
         <font>
-         <pointsize>36</pointsize>
+         <pointsize>42</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color:#5cb85c;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string/>
@@ -353,7 +362,7 @@
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
             </font>
            </property>
            <property name="text">
@@ -366,7 +375,7 @@
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
             </font>
            </property>
            <property name="text">
@@ -382,7 +391,7 @@
           <widget class="QPushButton" name="btnLabelUp">
            <property name="font">
             <font>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
              <weight>50</weight>
              <bold>false</bold>
             </font>
@@ -419,7 +428,7 @@
           <widget class="QPushButton" name="btnLabelDown">
            <property name="font">
             <font>
-             <pointsize>36</pointsize>
+             <pointsize>42</pointsize>
             </font>
            </property>
            <property name="focusPolicy">
@@ -486,7 +495,7 @@
       <widget class="QPushButton" name="btnSubmit">
        <property name="font">
         <font>
-         <pointsize>36</pointsize>
+         <pointsize>42</pointsize>
         </font>
        </property>
        <property name="text">
@@ -499,8 +508,8 @@
    <widget class="QFrame" name="feedbackframe">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>110</y>
+      <x>700</x>
+      <y>0</y>
       <width>411</width>
       <height>161</height>
      </rect>
@@ -518,7 +527,16 @@
      <property name="spacing">
       <number>0</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
@@ -544,7 +562,7 @@
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>36</pointsize>
+           <pointsize>42</pointsize>
           </font>
          </property>
          <property name="styleSheet">

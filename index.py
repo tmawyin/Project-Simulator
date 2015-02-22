@@ -1,15 +1,20 @@
 import sys
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtOpenGL
 from PySide.QtGui import QMainWindow, QPushButton, QApplication, QDesktopWidget
 from mainwindow import Ui_MainWindow
+from graph import Graph
 import csv
 import numpy as np
 import pygame
 
+from OpenGL import *
+
 class MainWindow(QMainWindow, Ui_MainWindow):	
+
 	def __init__(self, parent = None):
 		pygame.init()
+		
 		# Define variables
 		txtList = np.genfromtxt('largeSet.txt',dtype='str',delimiter='\n')
 		ansList = np.genfromtxt('largeAnsSet.txt',dtype='int',delimiter='\n')
@@ -25,17 +30,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
 		
-		# Hide all the frames except the initial
-		self.readyframe.hide()
-		self.feedbackframe.hide()
-		self.gameframe.hide()	
+		# Show the application in fullscreen
 		self.showFullScreen()
 		
 		# Setting the frames to be full screen
 		desktop = QDesktopWidget()
 		width = desktop.geometry().width()
 		height = desktop.geometry().height()
+		
+		# Create the graph object
+		#self.graph = Graph(width, height)
+		#self.setCentralWidget(self.graph)
+		
+		# Hide all the frames except the initial
+		self.introframe.show()
+		self.readyframe.hide()
+		self.feedbackframe.hide()
+		self.gameframe.hide()	
 
+		# Position and resize the frames.
 		self.introframe.move(0,0)
 		self.introframe.resize(width, height)
 		self.readyframe.move(0,0)		
@@ -44,6 +57,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.feedbackframe.resize(width, height)
 		self.gameframe.move(0,0)
 		self.gameframe.resize(width, height)
+		
+		#self.setGlanceWarning()
+		#self.setGlanceDanger()
 
 		''' BUTTONS '''
 		# Button "DONE" on click
@@ -67,6 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.response = self.counter
 		# Increase counter for interactions with screen
 		self.interact += 1
+		
 	def Downhighlight(self):
 		self.btnLabelDown.setStyleSheet("QPushButton{border:0px;margin:0px;padding:0px;color:white;background-color:blue;text-align:left;}")
 		self.btnLabelUp.setStyleSheet("QPushButton{border:0px;margin:0px;padding:0px;color:black;background-color:white;text-align:left;}")
@@ -120,9 +137,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.feedbackframe.hide()
 		self.gameframe.hide()
 		self.readyframe.show()
-		# Wait for 2 seconds before calling the game screen
-		#timer = QtCore.QTimer()
-		#timer.singleShot(2000, self.showGameFrame)
+		#self.setCentralWidget(self.graph)
 
 	def showGameFrame(self):
 		# Set up the initial words
@@ -137,6 +152,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.feedbackframe.hide()
 		self.gameframe.show()
 		self.trialNum += 1
+		self.resetGlance()
 
 	def submitFun(self):
 		if np.isnan(self.response):
@@ -171,8 +187,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		np.random.shuffle(self.allList)
 		self.counter = 0 # Resets counter for answers
 		self.interact = 0 # Resets counter for interactions with screen
-
-
+		
+	def setGlanceWarning(self):
+		# Change the style of the glance
+		self.lblGlance.setStyleSheet("background-color:#f0ad4e; margin:0px 250px; padding-bottom:30px;")
+		
+	def setGlanceDanger(self):
+		# Change the style of the glance
+		self.lblGlance.setStyleSheet("background-color:#d9534f; margin:0px; padding-bottom:30px;")
+		
+	def resetGlance(self):
+		# Change the style of the glance
+		self.lblGlance.setStyleSheet("");
 		
 if __name__=='__main__':
 	app = QApplication(sys.argv)
