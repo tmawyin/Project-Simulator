@@ -4,17 +4,29 @@ from PySide import QtCore, QtGui, QtOpenGL
 from PySide.QtGui import QMainWindow, QPushButton, QApplication, QDesktopWidget
 from mainwindow import Ui_MainWindow
 from graph import Graph
+# from OpenGL import *
 import csv
 import numpy as np
 import pygame
+from NetClient import *
+from Receiver import *
 
-from OpenGL import *
 
 class MainWindow(QMainWindow, Ui_MainWindow):	
 
 	def __init__(self, parent = None):
 		pygame.init()
-		
+		# Initializing the NetClient
+		self.netclient = NetClient()
+		self.netclient.glanceWarningSignal.connect(self.setGlanceWarning, QtCore.Qt.QueuedConnection)
+		self.netclient.glanceDangerSignal.connect(self.setGlanceDanger, QtCore.Qt.QueuedConnection)
+		self.netclient.glanceResetSignal.connect(self.resetGlance, QtCore.Qt.QueuedConnection)
+		self.netclient.start()
+
+		# Initializing the RECEIVER
+		self.receiver = Receiver(self.netclient)
+		self.receiver.start()
+
 		# Define variables
 		txtList = np.genfromtxt('largeSet.txt',dtype='str',delimiter='\n')
 		ansList = np.genfromtxt('largeAnsSet.txt',dtype='int',delimiter='\n')
@@ -29,7 +41,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# Set up the GUI
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
-		
+
 		# Show the application in fullscreen
 		self.showFullScreen()
 		
@@ -39,9 +51,62 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		height = desktop.geometry().height()
 		
 		# Create the graph object
-		#self.graph = Graph(width, height)
-		#self.setCentralWidget(self.graph)
-		
+		##self.graph = Graph(width, height)
+		##self.setCentralWidget(self.graph)
+		# self.graph = Graph(width, height)		
+		# self.graph.createGrid(8, 14)
+		# self.graph.grid[7][0] = 3
+		# self.graph.grid[6][0] = 2
+		# self.graph.grid[5][0] = 2
+		# self.graph.grid[4][0] = 2
+		# self.graph.grid[3][0] = 1
+		# self.graph.grid[7][1] = 3
+		# self.graph.grid[6][1] = 3
+		# self.graph.grid[5][1] = 1
+		# self.graph.grid[4][1] = 1
+		# self.graph.grid[7][2] = 3
+		# self.graph.grid[6][2] = 3
+		# self.graph.grid[5][2] = 2
+		# self.graph.grid[4][2] = 2
+		# self.graph.grid[3][2] = 2
+		# self.graph.grid[2][2] = 1
+		# self.graph.grid[7][3] = 3
+		# self.graph.grid[6][3] = 3
+		# self.graph.grid[5][3] = 3
+		# self.graph.grid[4][3] = 3
+		# self.graph.grid[7][4] = 3
+		# self.graph.grid[6][4] = 3
+		# self.graph.grid[5][4] = 2
+		# self.graph.grid[4][4] = 1
+		# self.graph.grid[7][5] = 3
+		# self.graph.grid[6][5] = 3
+		# self.graph.grid[5][5] = 2
+		# self.graph.grid[4][5] = 2
+		# self.graph.grid[3][5] = 1
+		# self.graph.grid[7][6] = 3
+		# self.graph.grid[6][6] = 2
+		# self.graph.grid[5][6] = 2
+		# self.graph.grid[4][6] = 1
+		# self.graph.grid[7][7] = 2
+		# self.graph.grid[6][7] = 1
+		# self.graph.grid[5][7] = 1
+		# self.graph.grid[4][7] = 1
+		# self.graph.grid[7][8] = 3
+		# self.graph.grid[6][8] = 2
+		# self.graph.grid[5][8] = 1
+		# self.graph.grid[7][9] = 3
+		# self.graph.grid[6][9] = 1
+		# self.graph.grid[7][10] = 2
+		# self.graph.grid[6][10] = 2
+		# self.graph.grid[5][10] = 1
+		# self.graph.grid[7][11] = 1
+		# self.graph.grid[6][11] = 1
+		# self.graph.grid[5][11] = 1
+		# self.graph.grid[7][12] = 2
+		# self.graph.grid[6][12] = 1
+		# self.graph.grid[7][13] = 1		
+		# self.setCentralWidget(self.graph)
+
 		# Hide all the frames except the initial
 		self.introframe.show()
 		self.readyframe.hide()
@@ -205,3 +270,5 @@ if __name__=='__main__':
 	frame = MainWindow()
 	frame.show()
 	app.exec_()
+	
+	
