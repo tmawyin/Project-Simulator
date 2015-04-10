@@ -6,8 +6,10 @@ from PySide.QtCore import Qt, QObject, QThread, Signal
 from NetClient import *
 
 class Receiver(QThread):
+	terminateScreen = Signal()
+	
 	# Receiver constructor
-	def __init__(self, netclient, name = "Receiver"):
+	def __init__(self, netclient, parID_Signal, name = "Receiver"):
 		# Call the thread's constructor
 		QThread.__init__(self)
 		
@@ -15,22 +17,26 @@ class Receiver(QThread):
 		self.name = name
 		
 		# Initialize the variables
-		self.receiverData ={}
+		self.receiverData ={"FRAME":'0',"GAZE":'0',"OneCount":'0',"ZeroCount":'0',"MaxCount":'0',"WarnCount":'0',"DangerCount":'0',"RstCount":'0',"GlanceCount":'0',"LowCount":'0'}
 		self.frameValue = 0
 		self.logStream = 0
-		self.speed = 0.0
-		self.laneDepart = 0
+		self.laneDepart = 0.0
+		self.laneDeviation = 0.0
+		
 		self.distance = 0.0
 		self.bumperTime = 0.0
 		self.bumperDist = 0.0
 		self.collisionTime = 0.0
 		self.leadVehVel = 0.0
-		# self.isTaskReady = False
-		# self.isTaskCompleted = False
-		# self.isTaskRecorded = False
+
+		self.numCollision = 0
+		self.chassisAccel = 0.0
+
+		self.participantID = 'Default'
 
 		# Connecting to the netclient signal
 		netclient.receiverDataSignal.connect(self.setReceiverVars, Qt.QueuedConnection)
+		parID_Signal.connect(self.setReceiverParID,Qt.QueuedConnection)
 
 		try:
 			# Create a new socket, use IPv4 and UDP
@@ -46,14 +52,26 @@ class Receiver(QThread):
 	
 	def setReceiverVars(self, variable):
 		self.receiverData = variable
-		#print "Testing Testing::::", self.receiverData
+		with open('%s_net.csv'%self.participantID,'ab') as csvfile:
+			toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
+			toFile.writerow(['%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
+
+	def setReceiverParID(self, variable):
+		self.participantID = variable
+
+	# Receiver destructor
+	def exitAll(self):
+		QThread.quit()
 
 	# Runs the receiver
 	def run(self):
 		# Check that the socket is alive
 		if self.socket is None:
 			return;
-					
+		
+		# Keeps track of the packages received
+		pkgCounter = 0
+
 		while True:
 			# Receive the data, then check that some data was returned
 			packet = self.socket.recv(256)
@@ -65,36 +83,27 @@ class Receiver(QThread):
 				# Unpack the data, disregard the other bytes
 				data = struct.unpack('<fffff', packet[0:20])
 				self.logStream = int(data[0])
-				print("Log value is: %d" %self.logStream)
-			
-				# # Check the data
-				# if data == 1 and self.isTaskReady == False:
-				# 	self.isTaskCompleted = False
-				# 	self.isTaskRecorded = False
-				# 	self.isTaskReady = True
-				# 	#print("Data is 1")
-				# else:
-				# 	self.isTaskReady = False
-				# 	#print("Data is 0")
-			
+				pkgCounter += 1
+				# print("Log value is: %d" %self.logStream)
+
+				# Use to show the postdrive screen	
+				if self.logStream == 8:
+					self.terminateScreen.emit()
+					self.exitAll()
+
 			# VARIABLE: FRAME NUMBER	
 			elif len(packet) == 4:
 				# Unpack the data (integer type)
 				data = struct.unpack('<i', packet)
 				self.frameValue = data
-				print("Frame value is: %d" %self.frameValue)
+				pkgCounter += 1
+				# print("Frame value is: %d" %self.frameValue)
 
-				# if self.isTaskCompleted == True and self.isTaskRecorded == False:
-				# 	# Set the last frame value
-				# 	self.lastTaskFrame = data[0]
-				# 	self.isTaskRecorded = True
-				# 	print("Set frame")
-
-			# VARIABLE: AVERAGE SPEED
+			# VARIABLE: NUMBER COLLISIONS
 			elif len(packet) == 8:
 				data = struct.unpack('<ff', packet[0:8])
-				self.speed = float(data[0]) 
-				print('Speed is: %f' %self.speed)
+				self.numCollision = int(data[0]) 
+				# print('Num of Collisions: %d' %self.numCollision)
 
 			# VARIABLE: FOLLOW INFO
 			elif len(packet) == 36:
@@ -104,18 +113,35 @@ class Receiver(QThread):
 				self.bumperDist = float(data[3])
 				self.collisionTime = float(data[4])
 				self.leadVehVel = float(data[5])
-				print('Lead distance is: %f' %self.distance)
+				pkgCounter += 1
+				# print('Lead distance is: %f' %self.distance)
 		
+			# VARIABLE: LANE DEVIATION
+			elif len(packet) == 16:
+				data = struct.unpack('<ffff', packet[0:16])
+				self.laneDeviation = float(data[1])
+				pkgCounter += 1
+				# print('Lane deviation is: %f' %self.laneDeviation)
+
 			# VARIABLE: LANE DEPARTURE
+			elif len(packet) == 24:
+				data = struct.unpack('<ffffff', packet[0:24])
+				self.laneDepart = float(data[0])
+				# print('Lane departure is: %f' %self.laneDepart)			
+			
+			# VARIABLE: ACCELERATION
 			elif len(packet) == 12:
 				data = struct.unpack('<fff', packet[0:12])
-				self.laneDepart = float(data[0])
-				print('Lane departure is: %f' %self.laneDepart)
+				self.chassisAccel = float(data[0])
+				pkgCounter += 1
+				# print('Acceleration x: %f' %self.chassisAccel)
 
 			# Save variables to file
-			with open('ReceiverData.csv','ab') as csvfile:
-				toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
-				toFile.writerow(['%d'%self.frameValue,'%d'%self.laneDepart,'%f'%self.speed,'%f'%self.laneDepart,'%f'%self.distance,'%f'%self.bumperTime,'%f'%self.bumperDist,'%f'%self.collisionTime,'%f'%self.leadVehVel])
+			if pkgCounter == 5:
+				with open('%s_data.csv'%self.participantID,'ab') as csvfile:
+					toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
+					toFile.writerow(['%d'%self.frameValue,'%d'%self.logStream,'%d'%self.numCollision,'%f'%self.laneDepart,'%f'%self.laneDeviation,'%f'%self.distance,'%f'%self.bumperTime,'%f'%self.bumperDist,'%f'%self.collisionTime,'%f'%self.leadVehVel,'%f'%self.chassisAccel])#,'%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
+				pkgCounter = 0
 
 		# Clean up
 		self.socket.close()

@@ -1,5 +1,5 @@
 import sys
-
+import os
 from PySide import QtCore, QtGui, QtOpenGL
 from PySide.QtGui import QMainWindow, QPushButton, QApplication, QDesktopWidget
 from mainwindow import Ui_MainWindow
@@ -13,21 +13,19 @@ from Receiver import *
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):	
+	parID_signal = QtCore.Signal(str)
 
 	def __init__(self, parent = None):
+		# Initialize the constructor
+		super(MainWindow, self).__init__(parent)
 		pygame.init()
-		# Initializing the NetClient
-		self.netclient = NetClient()
-		self.netclient.glanceWarningSignal.connect(self.setGlanceWarning, QtCore.Qt.QueuedConnection)
-		self.netclient.glanceDangerSignal.connect(self.setGlanceDanger, QtCore.Qt.QueuedConnection)
-		self.netclient.glanceResetSignal.connect(self.resetGlance, QtCore.Qt.QueuedConnection)
-		self.netclient.start()
 
-		# Initializing the RECEIVER
-		self.receiver = Receiver(self.netclient)
-		self.receiver.start()
+		# Removes glances file - not needed
+		if os.path.exists('GlancesNetclient.csv'):
+			os.remove("GlancesNetclient.csv")
 
 		# Define variables
+		self.initAll = False
 		txtList = np.genfromtxt('largeSet.txt',dtype='str',delimiter='\n')
 		ansList = np.genfromtxt('largeAnsSet.txt',dtype='int',delimiter='\n')
 		# Creates the list of words with corresponding answer keys
@@ -39,7 +37,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.interact = 0 # Keeps track of the number of interactions
 
 		# Set up the GUI
-		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
 
 		# Show the application in fullscreen
@@ -49,63 +46,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		desktop = QDesktopWidget()
 		width = desktop.geometry().width()
 		height = desktop.geometry().height()
+		# width = 1440
+		# height = 900
 		
 		# Create the graph object
-		##self.graph = Graph(width, height)
-		##self.setCentralWidget(self.graph)
-		# self.graph = Graph(width, height)		
-		# self.graph.createGrid(8, 14)
-		# self.graph.grid[7][0] = 3
-		# self.graph.grid[6][0] = 2
-		# self.graph.grid[5][0] = 2
-		# self.graph.grid[4][0] = 2
-		# self.graph.grid[3][0] = 1
-		# self.graph.grid[7][1] = 3
-		# self.graph.grid[6][1] = 3
-		# self.graph.grid[5][1] = 1
-		# self.graph.grid[4][1] = 1
-		# self.graph.grid[7][2] = 3
-		# self.graph.grid[6][2] = 3
-		# self.graph.grid[5][2] = 2
-		# self.graph.grid[4][2] = 2
-		# self.graph.grid[3][2] = 2
-		# self.graph.grid[2][2] = 1
-		# self.graph.grid[7][3] = 3
-		# self.graph.grid[6][3] = 3
-		# self.graph.grid[5][3] = 3
-		# self.graph.grid[4][3] = 3
-		# self.graph.grid[7][4] = 3
-		# self.graph.grid[6][4] = 3
-		# self.graph.grid[5][4] = 2
-		# self.graph.grid[4][4] = 1
-		# self.graph.grid[7][5] = 3
-		# self.graph.grid[6][5] = 3
-		# self.graph.grid[5][5] = 2
-		# self.graph.grid[4][5] = 2
-		# self.graph.grid[3][5] = 1
-		# self.graph.grid[7][6] = 3
-		# self.graph.grid[6][6] = 2
-		# self.graph.grid[5][6] = 2
-		# self.graph.grid[4][6] = 1
-		# self.graph.grid[7][7] = 2
-		# self.graph.grid[6][7] = 1
-		# self.graph.grid[5][7] = 1
-		# self.graph.grid[4][7] = 1
-		# self.graph.grid[7][8] = 3
-		# self.graph.grid[6][8] = 2
-		# self.graph.grid[5][8] = 1
-		# self.graph.grid[7][9] = 3
-		# self.graph.grid[6][9] = 1
-		# self.graph.grid[7][10] = 2
-		# self.graph.grid[6][10] = 2
-		# self.graph.grid[5][10] = 1
-		# self.graph.grid[7][11] = 1
-		# self.graph.grid[6][11] = 1
-		# self.graph.grid[5][11] = 1
-		# self.graph.grid[7][12] = 2
-		# self.graph.grid[6][12] = 1
-		# self.graph.grid[7][13] = 1		
-		# self.setCentralWidget(self.graph)
+		self.graph = Graph(width, height)
 
 		# Hide all the frames except the initial
 		self.introframe.show()
@@ -122,9 +67,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.feedbackframe.resize(width, height)
 		self.gameframe.move(0,0)
 		self.gameframe.resize(width, height)
-		
-		#self.setGlanceWarning()
-		#self.setGlanceDanger()
 
 		''' BUTTONS '''
 		# Button "DONE" on click
@@ -195,14 +137,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	# Showing all required frames
 	def showReadyFrame(self):
 		self.parID = self.editParticipantID.text()
-		with open('%s.csv'%self.parID,'wb') as csvfile:
-			toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
-			toFile.writerow(['Trial#','Phrase Selected','isCorrect','Interactions'])
+		# if self.initAll == False:
+		# 	# Initializing the NetClient
+		# 	self.netclient = NetClient()
+		# 	self.netclient.glanceWarningSignal.connect(self.setGlanceWarning, QtCore.Qt.QueuedConnection)
+		# 	self.netclient.glanceDangerSignal.connect(self.setGlanceDanger, QtCore.Qt.QueuedConnection)
+		# 	self.netclient.glanceResetSignal.connect(self.resetGlance, QtCore.Qt.QueuedConnection)
+		# 	self.netclient.start()
+		# 	# Initializing the RECEIVER
+		# 	self.receiver = Receiver(self.netclient,self.parID_signal)
+		# 	self.receiver.terminateScreen.connect(self.showPostDrive, QtCore.Qt.QueuedConnection)
+		# 	self.receiver.start()
+		# 	self.parID_signal.emit(self.parID)
+		# 	self.initAll = True
+		
+		# GUI part
 		self.introframe.hide()
 		self.feedbackframe.hide()
 		self.gameframe.hide()
 		self.readyframe.show()
-		#self.setCentralWidget(self.graph)
+		self.resetGlance()
+		
+		# Only create the file if it does not exist
+		if not os.path.exists('%s.csv'%self.parID):
+			with open('%s.csv'%self.parID,'wb') as csvfile:
+				toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
+				toFile.writerow(['Trial#','Phrase Selected','isCorrect','Interactions'])
+
 
 	def showGameFrame(self):
 		# Set up the initial words
@@ -231,7 +192,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				self.feedbackframe.show()
 				self.interact += 1 # Increase counter for interactions with screen
 				timer = QtCore.QTimer()
-				timer.singleShot(1000, self.showGameFrame)
+				# timer.singleShot(1000, self.showGameFrame)
+				timer.singleShot(1000, self.showPostDrive)
 				
 			# Correct response - Goes back to "Task Is Ready" Screen
 			if int(self.allList[self.response,1]) == 1:
@@ -256,14 +218,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def setGlanceWarning(self):
 		# Change the style of the glance
 		self.lblGlance.setStyleSheet("background-color:#f0ad4e; margin:0px 250px; padding-bottom:30px;")
+		self.lblGlance_2.setStyleSheet("background-color:#f0ad4e; margin:0px 350px; padding-bottom:30px; max-height: 64px;")
 		
 	def setGlanceDanger(self):
 		# Change the style of the glance
 		self.lblGlance.setStyleSheet("background-color:#d9534f; margin:0px; padding-bottom:30px;")
+		self.lblGlance_2.setStyleSheet("background-color:#d9534f; margin:0px 100px; padding-bottom:30px; max-height: 64px;")
 		
 	def resetGlance(self):
 		# Change the style of the glance
 		self.lblGlance.setStyleSheet("");
+		self.lblGlance_2.setStyleSheet("");
+
+	def showPostDrive(self):
+		self.graph.createGraph(self.parID,15,20)
+		self.setCentralWidget(self.graph)
 		
 if __name__=='__main__':
 	app = QApplication(sys.argv)
