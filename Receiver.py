@@ -2,6 +2,7 @@ import threading
 import socket
 import struct
 import csv
+import numpy as np
 from PySide.QtCore import Qt, QObject, QThread, Signal
 from NetClient import *
 
@@ -17,6 +18,8 @@ class Receiver(QThread):
 		self.name = name
 		
 		# Initialize the variables
+		self.netFileData = []
+		self.recFileData = []
 		self.receiverData ={"FRAME":'0',"GAZE":'0',"OneCount":'0',"ZeroCount":'0',"MaxCount":'0',"WarnCount":'0',"DangerCount":'0',"RstCount":'0',"GlanceCount":'0',"LowCount":'0'}
 		self.frameValue = 0
 		self.logStream = 0
@@ -52,16 +55,18 @@ class Receiver(QThread):
 	
 	def setReceiverVars(self, variable):
 		self.receiverData = variable
-		with open('%s_net.csv'%self.participantID,'ab') as csvfile:
-			toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
-			toFile.writerow(['%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
+		self.netFileData.append(['%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
+		# with open('%s_net.csv'%self.participantID,'ab') as csvfile:
+		# 	toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
+		# 	toFile.writerow(['%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
 
 	def setReceiverParID(self, variable):
 		self.participantID = variable
 
 	# Receiver destructor
-	def exitAll(self):
+	def exitAll():
 		QThread.quit()
+		self.quit()
 
 	# Runs the receiver
 	def run(self):
@@ -87,9 +92,13 @@ class Receiver(QThread):
 				# print("Log value is: %d" %self.logStream)
 
 				# Use to show the postdrive screen	
-				if self.logStream == 8:
+				if self.logStream == 9:
+					# Saving to files
+					np.savetxt('../../participantData/Gamification/%s_data.csv'%self.participantID, np.asarray(self.recFileData), delimiter=",", fmt="%s")
+					np.savetxt('../../participantData/Gamification/%s_net.csv'%self.participantID, np.asarray(self.netFileData), delimiter=",", fmt="%s")
 					self.terminateScreen.emit()
 					self.exitAll()
+					break
 
 			# VARIABLE: FRAME NUMBER	
 			elif len(packet) == 4:
@@ -138,9 +147,10 @@ class Receiver(QThread):
 
 			# Save variables to file
 			if pkgCounter == 5:
-				with open('%s_data.csv'%self.participantID,'ab') as csvfile:
-					toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
-					toFile.writerow(['%d'%self.frameValue,'%d'%self.logStream,'%d'%self.numCollision,'%f'%self.laneDepart,'%f'%self.laneDeviation,'%f'%self.distance,'%f'%self.bumperTime,'%f'%self.bumperDist,'%f'%self.collisionTime,'%f'%self.leadVehVel,'%f'%self.chassisAccel])#,'%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
+				self.recFileData.append(['%d'%self.frameValue,'%d'%self.logStream,'%d'%self.numCollision,'%f'%self.laneDepart,'%f'%self.laneDeviation,'%f'%self.distance,'%f'%self.bumperTime,'%f'%self.bumperDist,'%f'%self.collisionTime,'%f'%self.leadVehVel,'%f'%self.chassisAccel])
+				# with open('%s_data.csv'%self.participantID,'ab') as csvfile:
+				# 	toFile = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
+				# 	toFile.writerow(['%d'%self.frameValue,'%d'%self.logStream,'%d'%self.numCollision,'%f'%self.laneDepart,'%f'%self.laneDeviation,'%f'%self.distance,'%f'%self.bumperTime,'%f'%self.bumperDist,'%f'%self.collisionTime,'%f'%self.leadVehVel,'%f'%self.chassisAccel])#,'%s'%self.receiverData['FRAME'],'%s'%self.receiverData['GAZE'],'%s'%self.receiverData['OneCount'],'%s'%self.receiverData['ZeroCount'],'%s'%self.receiverData['MaxCount'],'%s'%self.receiverData['WarnCount'],'%s'%self.receiverData['DangerCount'],'%s'%self.receiverData['RstCount'],'%s'%self.receiverData['LowCount']])
 				pkgCounter = 0
 
 		# Clean up
